@@ -1,0 +1,12 @@
+// @import './variables.module.scss';
+//全局mixin
+@mixin is-active--after {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 4px;
+    height: 100%;
+    background-color: var(--el-color-primary);
+    content: '';
+  }
+
