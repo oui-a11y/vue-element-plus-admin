@@ -30,6 +30,7 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
   } else {
     env = loadEnv(mode, root) as any as ImportMetaEnv
   }
+
   return {
     base: env.VITE_BASE_PATH,
     plugins: [
