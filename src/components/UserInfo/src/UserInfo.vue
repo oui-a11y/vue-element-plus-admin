@@ -47,7 +47,7 @@ const toDocument = () => {
   <ElDropdown :class="prefixCls" trigger="click">
     <div class="flex items-center">
       <img
-        src="@/assets/imgs/avatar.jpg"
+        src="@/assets/imgs/avatar.png"
         alt=""
         class="w-[calc(var(--tags-view-height)-10px)] rounded-[50%]"
       />

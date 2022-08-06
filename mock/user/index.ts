@@ -1,7 +1,6 @@
-import { config } from '@/config/axios/config'
 import { MockMethod } from 'vite-plugin-mock'
 
-const { result_code } = config
+const result_code = '0000'
 
 const timeout = 1000
 

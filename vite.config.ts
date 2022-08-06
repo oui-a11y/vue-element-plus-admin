@@ -12,7 +12,12 @@ import PurgeIcons from 'vite-plugin-purge-icons'
 import { viteMockServe } from 'vite-plugin-mock'
 import DefineOptions from 'unplugin-vue-define-options/vite'
 import { createHtmlPlugin } from 'vite-plugin-html'
-import viteCompression from 'vite-plugin-compression';
+
+import  { wrapperEnv }  from './build/utils';
+// import visualizer from 'rollup-plugin-visualizer'
+// import viteCompression from 'vite-plugin-compression';
+import { createVitePlugins } from './build/vite/plugins';
+
 
 // https://vitejs.dev/config/
 const root = process.cwd()
@@ -23,16 +28,15 @@ function pathResolve(dir: string) {
 
 // https://vitejs.dev/config/
 export default ({ command, mode }: ConfigEnv): UserConfig => {
-  let env :ImportMetaEnv
+
   const isBuild = command === 'build'
-  if (!isBuild) {
-    env = loadEnv((process.argv[3] === '--mode' ? process.argv[4] : process.argv[3]), root) as any as ImportMetaEnv
-  } else {
-    env = loadEnv(mode, root) as any as ImportMetaEnv
-  }
+
+  const env = loadEnv(mode, root);
+
+  const viteEnv = wrapperEnv(env);
 
   return {
-    base: env.VITE_BASE_PATH,
+    base: viteEnv.VITE_BASE_PATH,
     plugins: [
       Vue(),
       VueJsx(),
@@ -77,12 +81,16 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
       createHtmlPlugin({
         inject: {
           data: {
-            title: env.VITE_APP_TITLE,
+            title: viteEnv.VITE_APP_TITLE,
             injectScript: `<script src="./inject.js"></script>`,
           }
         }
       }),
-      viteCompression()
+      // viteEnv.VITE_BUILD_COMPRESS && viteCompression(),
+      // process.env.REPORT &&  visualizer({
+      //   open:true
+      // }),
+      createVitePlugins(viteEnv,isBuild)
     ],
 
     css: {
@@ -109,13 +117,22 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
     build: {
       target:"es2015",
       minify: 'terser',
-      outDir: env.VITE_OUT_DIR || 'dist',
-      sourcemap: env.VITE_SOURCEMAP === 'true' ? 'inline' : false,
+      outDir: viteEnv.VITE_OUT_DIR || 'dist',
+      assetsDir:'./static',
+      sourcemap: viteEnv.VITE_SOURCEMAP === 'true' ? 'inline' : false,
       reportCompressedSize:false,
       terserOptions: {
         compress: {
-          drop_debugger: env.VITE_DROP_DEBUGGER === 'true',
-          drop_console: env.VITE_DROP_CONSOLE === 'true'
+          drop_debugger: viteEnv.VITE_DROP_DEBUGGER === 'true',
+          drop_console: viteEnv.VITE_DROP_CONSOLE === 'true'
+        }
+      },
+      rollupOptions:{
+        output:{
+          manualChunks:{
+            vendor: ['vue', 'vue-router', 'pinia'],
+            // UIElement: ['element-plus'],
+          }
         }
       }
     },
