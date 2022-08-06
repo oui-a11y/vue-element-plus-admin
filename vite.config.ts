@@ -14,8 +14,6 @@ import DefineOptions from 'unplugin-vue-define-options/vite'
 import { createHtmlPlugin } from 'vite-plugin-html'
 
 import  { wrapperEnv }  from './build/utils';
-// import visualizer from 'rollup-plugin-visualizer'
-// import viteCompression from 'vite-plugin-compression';
 import { createVitePlugins } from './build/vite/plugins';
 
 
@@ -86,10 +84,6 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
           }
         }
       }),
-      // viteEnv.VITE_BUILD_COMPRESS && viteCompression(),
-      // process.env.REPORT &&  visualizer({
-      //   open:true
-      // }),
       createVitePlugins(viteEnv,isBuild)
     ],
 
